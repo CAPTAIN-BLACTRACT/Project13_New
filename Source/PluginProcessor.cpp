@@ -222,6 +222,25 @@ void Project13_NewAudioProcessor::changeProgramName (int index, const juce::Stri
 void Project13_NewAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     juce::dsp::ProcessSpec spec;
+    spec.sampleRate= sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumInputChannels();
+
+  
+  std::vector<juce::dsp::ProcessorBase*> dsp
+  {
+    &phaser,
+    &chorus,
+    &overdrive,
+    &ladderFilter,
+    &generalFilter
+  };
+
+  for(auto p : dsp)
+  {
+    p->prepare(spec);
+    p->reset();
+  }
 }
 
 void Project13_NewAudioProcessor::releaseResources()
@@ -488,15 +507,15 @@ void Project13_NewAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    //DONE: add APVTS
-    //DONE: create audio parameteres for all audio parameter
-    //TODO: update DSP here from audio parameters
-    //TODO: save/load settings
-    //TODO: save/load DSP order
-    //TODO: drag to reorder gui
-    //TODO: GUI design for each dsp instance
-    //TODO: metering
-    //TODO: preparing all dsp
+    //[DONE]: add APVTS
+    //[DONE]: create audio parameteres for all audio parameter
+    //[TODO]: update DSP here from audio parameters
+    //[TODO]: save/load settings
+    //[TODO]: save/load DSP order
+    //[TODO]: drag to reorder gui
+    //[TODO]: GUI design for each dsp instance
+    //[TODO]: metering
+    //[DONE]: preparing all dsp
 
     auto newDSPOrder = DSP_Order();
 
