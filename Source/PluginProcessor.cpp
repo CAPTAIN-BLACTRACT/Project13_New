@@ -509,13 +509,34 @@ void Project13_NewAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
 
     //[DONE]: add APVTS
     //[DONE]: create audio parameteres for all audio parameter
-    //[TODO]: update DSP here from audio parameters
-    //[TODO]: save/load settings
+    //[DONE]: update DSP here from audio parameters
+    //[TODO]: update genral filter corrections
+    //[TODO]: add smother for all param update
+    //[DONE]: save/load settings
     //[TODO]: save/load DSP order
     //[TODO]: drag to reorder gui
     //[TODO]: GUI design for each dsp instance
     //[TODO]: metering
     //[DONE]: preparing all dsp
+  phaser.dsp.setRate(phaserRateHz->get());
+  phaser.dsp.setCentreFrequency(phaserCenterFreqHz->get());
+  phaser.dsp.setDepth(phaserDepthPercent->get());
+  phaser.dsp.setFeedback(phaserFeedbackPercent->get());
+  phaser.dsp.setMix(phaserMixPercent->get());
+
+  chorus.dsp.setRate(chorusRateHz->get());
+  chorus.dsp.setDepth(chorusDepthPercent->get());
+  chorus.dsp.setCentreDelay(chorusCenterDelayMs->get());
+  chorus.dsp.setFeedback(chorusFeedbackPercent->get());
+  chorus.dsp.setMix(chorusMixPercent->get());
+  overdrive.dsp.setDrive(overdriveSaturation->get());
+
+  ladderFilter.dsp.setMode(
+    static_cast<juce::dsp::LadderFilterMode>(ladderFilterMode->getIndex())
+  );
+  ladderFilter.dsp.setCutoffFrequencyHz(ladderFilterCutoffHz->get());
+  ladderFilter.dsp.setResonance(ladderFilterResonance->get());
+  ladderFilter.dsp.setDrive(ladderFilterDrive->get());
 
     auto newDSPOrder = DSP_Order();
 
