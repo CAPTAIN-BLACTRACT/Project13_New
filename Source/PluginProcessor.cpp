@@ -576,7 +576,8 @@ bool Project13_NewAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* Project13_NewAudioProcessor::createEditor()
 {
-    return new Project13_NewAudioProcessorEditor (*this);
+    //return new Project13_NewAudioProcessorEditor (*this);
+  return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -585,12 +586,21 @@ void Project13_NewAudioProcessor::getStateInformation (juce::MemoryBlock& destDa
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+  juce::MemoryOutputStream mos(destData,false);
+  apvts.state.writeToStream(mos);
+
 }
 
 void Project13_NewAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+  auto tree = juce::ValueTree::readFromData(data,sizeInBytes);
+
+  if(tree.isValid())
+  {
+    apvts.replaceState(tree);
+  }
 }
 
 //==============================================================================
