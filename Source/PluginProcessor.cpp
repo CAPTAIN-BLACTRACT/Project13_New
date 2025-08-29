@@ -557,6 +557,7 @@ void Project13_NewAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     //[DONE]: add APVTS
     //[DONE]: create audio parameteres for all audio parameter
     //[DONE]: update DSP here from audio parameters
+  //[DONE]:bypassparams for each dsp element 
     //[TODO]: update genral filter corrections
     //[TODO]: add smother for all param update
     //[DONE]: save/load settings
