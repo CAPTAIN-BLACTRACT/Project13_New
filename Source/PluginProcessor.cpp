@@ -9,6 +9,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "juce_audio_processors/juce_audio_processors.h"
+#include "juce_core/juce_core.h"
 #include "juce_core/system/juce_PlatformDefs.h"
 #include <array>
 #include <memory>
@@ -600,26 +601,32 @@ void Project13_NewAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         dspOrder = newDSPOrder;
     //now convert dspOrder into an array of pointers
     DSP_Pointers dspPointers;
-    dspPointers.fill(nullptr); 
+    dspPointers.fill({});//dspPointers.fill(nullptr); 
 
     for (size_t i = 0; i < dspPointers.size(); ++i)
     {
         switch (dspOrder[i])
         {
          case DSP_Option::Phase:
-                dspPointers[i] = &phaser;
+                dspPointers[i].processor = &phaser;
+                dspPointers[i].bypassed = phaserBypass->get();
                 break;
          case DSP_Option::Chorus: 
-                dspPointers[i] = &chorus;
+                dspPointers[i].processor = &chorus;
+                dspPointers[i].bypassed = chorusBypass->get();
                 break;
          case DSP_Option::Overdrive:
-                dspPointers[i] = &overdrive;
+                dspPointers[i].processor = &overdrive;
+                dspPointers[i].bypassed = overdriveBypass->get();
                 break;
          case DSP_Option::LadderFilter:
-                dspPointers[i] = &ladderFilter;
+                dspPointers[i].processor = &ladderFilter;
+                dspPointers[i].bypassed = ladderFilterBypass->get();
                 break;
         case DSP_Option::GeneralFilter:
-                dspPointers[i] = &generalFilter; 
+                dspPointers[i].processor = &generalFilter; 
+                dspPointers[i].bypassed = generalFilterBypass->get();
+                break;
          case DSP_Option::END_OF_LIST:
                 jassertfalse;
                 break;
@@ -631,9 +638,10 @@ void Project13_NewAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
 
     for (size_t i = 0; i < dspPointers.size();++i)
     {
-        if (dspPointers[i] != nullptr)
+        if (dspPointers[i].processor != nullptr)
         {
-            dspPointers[i]->process(context);
+            juce::ScopedValueSetter<bool> svs(context.isBypassed,dspPointers[i].bypassed);
+            dspPointers[i].processor->process(context);
         }
     }
     
@@ -647,8 +655,8 @@ bool Project13_NewAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* Project13_NewAudioProcessor::createEditor()
 {
-    return new Project13_NewAudioProcessorEditor (*this);
-  //return new juce::GenericAudioProcessorEditor(*this);
+   // return new Project13_NewAudioProcessorEditor (*this);
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 template<>
