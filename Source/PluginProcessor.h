@@ -133,5 +133,17 @@ private:
     bool bypassed = false;
   };
     using DSP_Pointers = std::array<ProcessState, static_cast<size_t>(DSP_Option::END_OF_LIST)>;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Project13_NewAudioProcessor)
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Project13_NewAudioProcessor)
+  
+  template<typename ParamType, typename Params, typename Funcs>
+  void initCachedParams(Params paramsArray, Funcs funcsArray){
+    
+    for (size_t i = 0; i < paramsArray.size(); ++i)
+    {
+        auto ptrToParamPtr = paramsArray[i];
+        *ptrToParamPtr = dynamic_cast<ParamType>(apvts.getParameter(funcsArray[i]()));
+        jassert(*ptrToParamPtr != nullptr);
+    }
+  }
 };

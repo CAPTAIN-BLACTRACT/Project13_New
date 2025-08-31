@@ -139,14 +139,7 @@ Project13_NewAudioProcessor::Project13_NewAudioProcessor()
  
 
     };
-
-    for (size_t i = 0; i < floatParams.size(); ++i)
-    {
-        auto ptrToParamPtr = floatParams[i];
-        *ptrToParamPtr = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(floatNameFuncs[i]()));
-        jassert(*ptrToParamPtr != nullptr);
-    }
-
+    initCachedParams<juce::AudioParameterFloat *>(floatParams, floatNameFuncs);  
     auto choiceParams = std::array
     {
         &ladderFilterMode,
@@ -159,13 +152,7 @@ Project13_NewAudioProcessor::Project13_NewAudioProcessor()
         &getGeneralFilterModeName,
     };
 
-    for (size_t i = 0; i < choiceParams.size(); ++i)
-    {
-        auto ptrToParamPtr = choiceParams[i];
-        *ptrToParamPtr = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter(choiceNameFuncs[i]()));
-        jassert(*ptrToParamPtr != nullptr);
-    }
-
+    initCachedParams<juce::AudioParameterChoice*>(choiceParams,choiceNameFuncs);
   auto bypassParams = std::array
   {
     &phaserBypass,
@@ -182,14 +169,9 @@ Project13_NewAudioProcessor::Project13_NewAudioProcessor()
                        &getLadderFilterBypassName,
                        &getGeneralFilterBypassName,
                        };
-  for(size_t i=0; i<bypassParams.size(); ++i)
-                       {
-                       auto ptrToParamPtr = bypassParams[i];
-                       *ptrToParamPtr = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter(bypassNameFuncs[i]()));
-                       jassert(*ptrToParamPtr != nullptr);
-
-                       }
+  initCachedParams<juce::AudioParameterBool*>(bypassParams, bypassNameFuncs);
 }
+
 Project13_NewAudioProcessor::~Project13_NewAudioProcessor()
 {
 }
@@ -559,10 +541,11 @@ void Project13_NewAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     //[DONE]: create audio parameteres for all audio parameter
     //[DONE]: update DSP here from audio parameters
   //[DONE]:bypassparams for each dsp element 
-    //[TODO]: update genral filter corrections
+    //TODO: update genral filter corrections
     //[TODO]: add smother for all param update
     //[DONE]: save/load settings
     //[DONE]: save/load DSP order
+  //[DONE]: bypass dsp
     //[TODO]: filters are mono not stereo
     //[TODO]: drag to reorder gui
     //[TODO]: GUI design for each dsp instance
